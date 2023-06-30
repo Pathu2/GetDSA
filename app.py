@@ -1,5 +1,7 @@
+from flask import Flask, render_template, request
 import math
-
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key'
 def load_vocab():
     vocab = {}
     with open('vocab.txt', 'r') as f:
@@ -83,30 +85,53 @@ def get_idf_value(term):
      return math.log(len(documents)/vocab_idf_values[term])
 
 def calculate_sorted_order_of_documents(query_terms):
-     potential_documents = {}
-     for term in query_terms:
-         if vocab_idf_values[term] == 0:
-             continue
-         tf_values_by_document = get_tf_dictionary(term)
-         idf_value = get_idf_value(term)
-    
-         for document in tf_values_by_document:
-             if document not in potential_documents:
-                 potential_documents[document] = tf_values_by_document[document] * idf_value
-             potential_documents[document] += tf_values_by_document[document] * idf_value
+    potential_documents = {}
+    for term in query_terms:
+        if term not in vocab_idf_values or vocab_idf_values[term] == 0:
+            continue
+        tf_values_by_document = get_tf_dictionary(term)
+        idf_value = get_idf_value(term)
 
-    #   divite by the length of the query terms
-     for document in potential_documents:
-         potential_documents[document] /= len(query_terms)
+        for document in tf_values_by_document:
+            if document not in potential_documents:
+                potential_documents[document] = tf_values_by_document[document] * idf_value
+            potential_documents[document] += tf_values_by_document[document] * idf_value
 
-     potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
+    # Divide by the length of the query terms
+    for document in potential_documents:
+        potential_documents[document] /= len(query_terms)
 
-     for document_index in potential_documents:
-         print('Document: ', ' '.join(documents[int(document_index)]), links[int(document_index)], ' Score: ', potential_documents[document_index])
+    potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
+
+    results = []
+    for document_index in potential_documents:
+        results.append(('Document: ', links[int(document_index)], ' Score: ', potential_documents[document_index]))
+
+    return results
 
 
-query_string = input('Enter your query: ')
-query_terms = [term.lower() for term in query_string.strip().split()]
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/results', methods=['POST', 'GET'])
+def display_results():
+    if request.method == 'POST':
+        query = request.form.get('query')
+        query_terms = query.lower().split()
+        results = calculate_sorted_order_of_documents(query_terms)
+        top_results = results[:10]  # Display top 10 results
+
+        if not top_results:  # No results found
+            return render_template('index.html', query=query, no_results=True)
+
+        return render_template('index.html', query=query, results=top_results)
+    else:
+        return render_template('index.html')
 
 
-calculate_sorted_order_of_documents(query_terms)
+# query_string = input('Enter your query: ')
+# query_terms = [term.lower() for term in query_string.strip().split()]
+
+
+# calculate_sorted_order_of_documents(query_terms)

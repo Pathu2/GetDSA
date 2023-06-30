@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Engine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .search-form {
+            text-align: center;
+        }
+        .search-input {
+            padding: 10px;
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .search-button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #337ab7;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+        .results-container {
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 4px;
+        }
+        .results-title {
+            margin-bottom: 10px;
+        }
+        .no-results {
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>FinDSA-Search Engine for DSA problems</h1>
+    <form class="search-form" action="/results" method="post">
+        <input class="search-input" type="text" name="query" placeholder="Enter your query" required>
+        <button class="search-button" type="submit">Search</button>
+    </form>
+
+    {% if query %}
+    <div class="results-container">
+        {% if results %}
+            <h2 class="results-title">Search Results for "{{ query }}":</h2>
+            <ul>
+                {% for result in results %}
+                    <li>Document: <a href="{{ result[1] }}">{{ result[1] }}</a> Score: {{ result[3] }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% if no_results %}
+                <p class="no-results">No results found for "{{ query }}"</p>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endif %}
+
+</body>
+</html>
