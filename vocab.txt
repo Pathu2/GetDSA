@@ -1,4 +1,4 @@
-of
+﻿of
 to
 a
 number
@@ -1411,7 +1411,7 @@ represented
 quad-trees
 placing
 resultant
-�
+×
 push
 dominoes
 multiplying
