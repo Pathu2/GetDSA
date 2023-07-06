@@ -1,2 +1,2 @@
-# FinDSA
- FinDSA-Search Engine for DSA Problems
+# GetDSA
+ GetDSA-Search Engine for DSA Problems
