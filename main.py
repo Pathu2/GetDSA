@@ -9,7 +9,7 @@ import time
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
-# Define the chromedriver service
+
 s = Service('chromedriver.exe')
 
 # Instantiate the webdriver

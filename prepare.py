@@ -1,14 +1,15 @@
 
 import re
 
-# Read the file and get the lines
+
 with open("Qdata/index.txt", "r", encoding="cp1252") as f:
     lines = f.readlines()
 
 question_data = [''] * 2035
-
+#intialise the question data
 encodings = ["utf-8", "cp1252", "utf-16"]
-
+#started from the index 0 to 2034 to read all the files till first time the word "Example"
+#used try and catch method to handle errors
 for index in range(0, 2034, 1):
     encoded_index = str(index+1)
     file_path = f"Qdata/{encoded_index}/{encoded_index}.txt"
@@ -26,8 +27,8 @@ for index in range(0, 2034, 1):
         except UnicodeDecodeError:
             continue
 
-print(len(lines))
-print(len(question_data))
+# print(len(lines))
+# print(len(question_data))
 
 def preprocess(line):
     terms = [term.lower() for term in line.split()[1:]]
@@ -47,10 +48,9 @@ for index, line in enumerate(lines):
         else:
             vocab[token] += 1
 
-# Reverse sorting the vocab
 vocab = dict(sorted(vocab.items(), key=lambda item: item[1], reverse=True))
+#sorting the vocab
 
-# Saving the key and value in two different text files
 with open("vocab.txt", "w", encoding="utf-8-sig") as f:
     for key in vocab.keys():
         f.write(key + '\n')
@@ -62,7 +62,7 @@ with open("idf-values.txt", "w", encoding="utf-8-sig") as f:
 with open("documents.txt", "w", encoding="utf-8-sig") as f:
     for document in documents:
         f.write("%s\n" % ' '.join(document))
-
+#saving the terms and number of occurence and getting the documnets 
 inverted_index = {}
 
 for index, document in enumerate(documents):
