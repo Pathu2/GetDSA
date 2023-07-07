@@ -76,11 +76,11 @@ def calculate_sorted_order_of_documents(query_terms):
             #if the term is not in our database
             continue
         tfValue = tf(term)
-        idf_value = idf_value(term)
+        idf = idf_value(term)  # Renamed the variable to 'idf'
         for document in tfValue:
             if document not in potential_documents:
-                potential_documents[document] = tfValue[document] * idf_value
-            potential_documents[document] += tfValue[document] * idf_value
+                potential_documents[document] = tfValue[document] * idf
+            potential_documents[document] += tfValue[document] * idf
     for document in potential_documents:
         potential_documents[document] /= len(query_terms)
     potential_documents = dict(sorted(potential_documents.items(), key=lambda item: item[1], reverse=True))
